@@ -1,0 +1,21 @@
+*{
+    box-sizing: border-box;
+}
+body{
+    display: flex;
+}
+
+.form-div{
+    max-width: 20%;
+    min-height: 100dvh;
+    border-right: 2px solid black;
+    padding: 20px;
+}
+
+form{
+    margin-block: 50px;
+}
+
+main{
+    padding: 200px;
+}
