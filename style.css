@@ -17,5 +17,6 @@ form{
 }
 
 main{
-    padding: 200px;
+    padding: 20px;
+    border: 10px solid red;
 }
