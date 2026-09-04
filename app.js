@@ -21,7 +21,8 @@
 */
 
 const formEl = document.getElementById("album-form");
-const mainEL = document.querySelector("#album-container");
+const mainEl = document.querySelector("#album-container");
+let albums = [];
 
 /**Eventos
  * Es cualquier accion que realiza el usuario en la pagina web
@@ -38,6 +39,18 @@ const mainEL = document.querySelector("#album-container");
  * object from entries recibe un array de arrays
 */
 
+window.addEventListener("load", (event) => {
+  if (getItemLocalStorage("albums") == undefined) return;
+  albums = [...getItemLocalStorage("albums")];
+  albums.map((album) => renderCard(album, mainEl));
+
+/**
+ * Segunda opcion
+ * getItemLocalStorage("albums").forEach((album) => albums.push (album))
+ */
+});
+
+
 formEl.addEventListener("submit", (event) => {
     event.preventDefault();
     const formData = new FormData(formEl);
@@ -45,62 +58,69 @@ formEl.addEventListener("submit", (event) => {
     console.log(formData);
     const dataArray = [...formData];
     console.log(dataArray);
-    const dataObject = Object.fromEntries(dataArray);
-    console.log(dataObject);
+    const album = Object.fromEntries(dataArray);
+    console.log(album);
     // Como hacer todo eso en una linea const album 
-    const album = Object.fromEntries([... new FormData(formEl)])
+    //const album = Object.fromEntries([... new FormData(formEl)])
+    albums.push(album);
+    setLocalStorage("albums", albums);
+    //limpiamos antes de volver a renderizar las cards, para evitar la acumulacion
+    mainEl.innerHTML = "";
+    //renderizamos todas las cards dentro del array del abums
+    
+    albums.map((album) => renderCard(album, mainEl));
+    formEl.reset();
+
 });
 
+const renderCard = (albumObject, htmlElement) => {
+  const card = `
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">${albumObject.title}</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">${albumObject.artist}</h6>
+        <p class="card-text">Género: ${albumObject.genre}</p>
+        <a href="#" class="card-link">Año de lanzamiento: ${albumObject.year}</a>
+        <a href="#" class="card-link">Rating: ${albumObject.rating}</a>
+      </div>
+    </div> 
+  `;
+  
+  htmlElement.insertAdjacentHTML("beforeend", card);
+};
+
+const setLocalStorage = (key, value) => {
+  //Paso 1 convertir el valor a texto
+  const textValue = JSON.stringify(value);
+  //Paso 2 almacenar
+  localStorage.setItem(key, textValue);
+};
+
+const getItemLocalStorage = (key) => {
+  if(localStorage.getItem(key) == null) return;
+  //convertimos de texto a lenguaje Js
+  const data = JSON.parse(localStorage.getItem(key));
+  return data;
+
+};
+
+
+/**
+ * 
+ * Opcion solo para este scipt en mainEL ahi sirve solo para este
+ * creo, checar mainel y htmlelemnt
+ * 
+ * const renderCard = (albumObject, htmlElement) => {
 const card = `
   <div class="card" style="width: 18rem;">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-      <a href="#" class="card-link">Card link</a>
-      <a href="#" class="card-link">Another link</a>
+      <h5 class="card-title">${albumObject.title}</h5>
+      <h6 class="card-subtitle mb-2 text-body-secondary">${albumObject.artist}</h6>
+      <p class="card-text">Genero: ${album.genre}</p>
+      <a href="#" class="card-link">Año de lanzamiento ${albumObject.year}</a>
+      <a href="#" class="card-link">Rating: ${albumObject.ratiting}</a>
     </div>
-  </div>
-`;
-
-/**
- * Manipulacion de la interfaz
- *  Propiedad llamada inherthtml dentro de ella podemos observar
- * todo el html que vive dentro de la etiqueta seleccionada
- * si lo usamos sin cuidado podemos borrar todo lo que estaba
- * !importante 
- * !No usas innerthtml para renderizar  solo texto si estoy rcibiendo y mostrando inmediatamente (propenso a inteccion html)
- * 2. Propiedad llamada textContent esta solo muestra el texto que tiene dentro
- * 
- * */ 
-
-console.log(mainEL.innerHTML);
-console.log("text content");
-console.log(mainEL.textContent);
-
-mainEL.innerHTML += "<h1>Hola ch71</h1>";
-mainEL.innerHTML += card;
-console.log(mainEL.innerHTML);
-
-
-//mainEL.textContent += "hola";
-//mainEL.textContent += card;
-
-/**
- * Insert adjacent HTML
- * Permite inserta html en el contenedor sin borrar lo que ya esta
- * y en una posicion especifica
- * y tiene 4 posiciones
- * 1. beforebegin
- * 2. beforeend
- * 3. afterbeging
- * 4. afterend
-*/
-
-
-mainEL.insertAdjacentHTML(
-    "beforeend",
-    "<p>Insertado por inset adjacent html</p>",
-);
-
-mainEL.insertAdjacentHTML("beforeend", card);
+  </div>  
+  `;
+  mainEl.insertAdjacentHTML("beforeend", card);
+}; */

@@ -16,7 +16,16 @@ form{
     margin-block: 50px;
 }
 
+
 main{
+    min-width: 80%;
     padding: 20px;
-    border: 10px solid red;
+    dispplay: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    /*Auto fit se ajusta auto fill se rellane*/
+    gap: 10px; /*Espacio entre ellos*/
+}
+
+.card{
+    max-height: fit-content; /*altura maxima se ajusta*/
 }
